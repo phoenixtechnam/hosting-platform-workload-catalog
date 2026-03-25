@@ -1,0 +1,12 @@
+{
+  "version": "1",
+  "name": "Official Workload Catalog",
+  "description": "Default workload images for the K8s Hosting Platform",
+  "workloads": [
+    "nginx-php84",
+    "apache-php84",
+    "wordpress-php84",
+    "static-nginx",
+    "node22"
+  ]
+}

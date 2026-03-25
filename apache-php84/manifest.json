@@ -1,0 +1,14 @@
+{
+  "name": "Apache + PHP 8.4",
+  "code": "apache-php84",
+  "type": "php",
+  "version": "8.4",
+  "description": "Apache HTTP Server with mod_php 8.4 for traditional PHP hosting",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "starter",
+  "resources": { "cpu": "0.25", "memory": "256Mi" },
+  "ports": [80],
+  "env_vars": ["PHP_MEMORY_LIMIT", "UPLOAD_MAX_SIZE"],
+  "tags": ["php", "apache", "web"]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Node.js 22",
+  "code": "node22",
+  "type": "nodejs",
+  "version": "22",
+  "description": "Node.js 22 LTS runtime for server-side JavaScript applications",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "starter",
+  "resources": { "cpu": "0.25", "memory": "256Mi" },
+  "ports": [3000],
+  "env_vars": ["NODE_ENV", "PORT"],
+  "tags": ["nodejs", "javascript", "runtime"]
+}

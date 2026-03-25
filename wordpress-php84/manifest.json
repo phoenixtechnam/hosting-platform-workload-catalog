@@ -1,0 +1,14 @@
+{
+  "name": "WordPress (PHP 8.4)",
+  "code": "wordpress-php84",
+  "type": "wordpress",
+  "version": "6.x",
+  "description": "WordPress with PHP 8.4, optimized for hosting environments",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "starter",
+  "resources": { "cpu": "0.50", "memory": "512Mi" },
+  "ports": [80],
+  "env_vars": ["WORDPRESS_DB_HOST", "WORDPRESS_DB_NAME", "WORDPRESS_DB_USER", "WORDPRESS_DB_PASSWORD"],
+  "tags": ["wordpress", "cms", "php"]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Static Site (NGINX)",
+  "code": "static-nginx",
+  "type": "static",
+  "version": "1.27",
+  "description": "NGINX serving static HTML/CSS/JS sites",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "starter",
+  "resources": { "cpu": "0.10", "memory": "64Mi" },
+  "ports": [80],
+  "env_vars": [],
+  "tags": ["static", "nginx", "html"]
+}

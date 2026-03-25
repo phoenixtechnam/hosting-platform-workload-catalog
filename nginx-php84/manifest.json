@@ -1,0 +1,14 @@
+{
+  "name": "NGINX + PHP 8.4",
+  "code": "nginx-php84",
+  "type": "php",
+  "version": "8.4",
+  "description": "NGINX web server with PHP-FPM 8.4 for modern PHP applications",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "starter",
+  "resources": { "cpu": "0.25", "memory": "256Mi" },
+  "ports": [80],
+  "env_vars": ["PHP_MEMORY_LIMIT", "UPLOAD_MAX_SIZE", "PHP_MAX_EXECUTION_TIME"],
+  "tags": ["php", "nginx", "web"]
+}
