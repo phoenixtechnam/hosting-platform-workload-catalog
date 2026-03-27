@@ -1,0 +1,390 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/phoenixtechnam/hosting-platform-workload-catalog/schema/manifest.schema.json",
+  "title": "Workload Manifest",
+  "description": "Schema for workload catalog manifest.json files used by the K8s Hosting Platform",
+  "type": "object",
+  "required": [
+    "name",
+    "code",
+    "type",
+    "version",
+    "description",
+    "image",
+    "has_dockerfile",
+    "min_plan",
+    "runtime",
+    "deployment_strategy",
+    "resources",
+    "container_port",
+    "mount_path",
+    "health_check",
+    "env_vars",
+    "tags"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable display name",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "code": {
+      "type": "string",
+      "description": "Unique identifier slug (must match directory name)",
+      "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$",
+      "minLength": 2,
+      "maxLength": 50
+    },
+    "type": {
+      "type": "string",
+      "description": "Workload category",
+      "enum": ["runtime", "database", "service"]
+    },
+    "version": {
+      "type": "string",
+      "description": "Primary version of the runtime/engine (e.g., '8.4', '10.6', '22')",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description shown in catalog UI",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "image": {
+      "type": ["string", "null"],
+      "description": "Pre-built container image reference (null if built from Dockerfile in this repo)"
+    },
+    "has_dockerfile": {
+      "type": "boolean",
+      "description": "Whether this directory contains a Dockerfile"
+    },
+    "min_plan": {
+      "type": "string",
+      "description": "Minimum hosting plan required",
+      "enum": ["starter", "business", "premium"]
+    },
+    "runtime": {
+      "type": "string",
+      "description": "Runtime engine identifier",
+      "enum": [
+        "php",
+        "node",
+        "python",
+        "ruby",
+        "dotnet",
+        "java",
+        "static",
+        "mariadb",
+        "mysql",
+        "postgresql",
+        "redis"
+      ]
+    },
+    "web_server": {
+      "type": ["string", "null"],
+      "description": "Web server used by runtime workloads (null for database/service workloads)",
+      "enum": ["nginx", "apache", "caddy", "gunicorn", "puma", "kestrel", "tomcat", "pm2", "built-in", null]
+    },
+    "deployment_strategy": {
+      "type": "string",
+      "description": "Kubernetes workload type",
+      "enum": ["deployment", "statefulset"]
+    },
+    "resources": {
+      "type": "object",
+      "description": "Default resource requests",
+      "required": ["cpu", "memory"],
+      "properties": {
+        "cpu": {
+          "type": "string",
+          "description": "CPU request (e.g., '0.25', '0.50')",
+          "pattern": "^[0-9]+\\.?[0-9]*$"
+        },
+        "memory": {
+          "type": "string",
+          "description": "Memory request (e.g., '256Mi', '1Gi')",
+          "pattern": "^[0-9]+(Mi|Gi)$"
+        },
+        "storage": {
+          "type": ["string", "null"],
+          "description": "PVC size for statefulsets (e.g., '5Gi')",
+          "pattern": "^[0-9]+(Mi|Gi)$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "container_port": {
+      "type": "integer",
+      "description": "Primary port the container listens on",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    "mount_path": {
+      "type": "string",
+      "description": "Path where the client PVC or data volume is mounted",
+      "pattern": "^/"
+    },
+    "health_check": {
+      "type": "object",
+      "description": "Liveness/readiness probe configuration",
+      "required": ["initial_delay_seconds", "period_seconds"],
+      "properties": {
+        "path": {
+          "type": ["string", "null"],
+          "description": "HTTP GET path for health check (null if using exec command)"
+        },
+        "command": {
+          "type": ["array", "null"],
+          "description": "Exec command for health check (null if using HTTP path)",
+          "items": { "type": "string" }
+        },
+        "port": {
+          "type": ["integer", "null"],
+          "description": "Port for HTTP health check (defaults to container_port if null)",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "initial_delay_seconds": {
+          "type": "integer",
+          "description": "Seconds to wait before first probe",
+          "minimum": 0,
+          "maximum": 300
+        },
+        "period_seconds": {
+          "type": "integer",
+          "description": "Seconds between probes",
+          "minimum": 1,
+          "maximum": 60
+        }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": ["path"],
+          "properties": {
+            "path": { "type": "string" },
+            "command": { "const": null }
+          }
+        },
+        {
+          "required": ["command"],
+          "properties": {
+            "command": { "type": "array" },
+            "path": { "const": null }
+          }
+        }
+      ]
+    },
+    "env_vars": {
+      "type": "object",
+      "description": "Environment variable declarations",
+      "required": ["configurable", "fixed"],
+      "properties": {
+        "configurable": {
+          "type": "array",
+          "description": "Env var names that admin/client can set values for",
+          "items": { "type": "string" }
+        },
+        "fixed": {
+          "type": "object",
+          "description": "Hardcoded env vars with default values",
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "services": {
+      "type": "object",
+      "description": "Companion services this workload requires (for runtime workloads)",
+      "properties": {
+        "database": {
+          "type": "object",
+          "required": ["required", "engines", "env_mapping"],
+          "properties": {
+            "required": {
+              "type": "boolean",
+              "description": "Whether a database must exist before deployment"
+            },
+            "engines": {
+              "type": "array",
+              "description": "Compatible database engines with minimum versions",
+              "items": {
+                "type": "object",
+                "required": ["type", "min_version"],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["mariadb", "mysql", "postgresql"]
+                  },
+                  "min_version": {
+                    "type": "string",
+                    "description": "Minimum compatible version (semver-like)"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "minItems": 1
+            },
+            "env_mapping": {
+              "type": "object",
+              "description": "Maps platform credential keys to app-specific env var names",
+              "properties": {
+                "host": { "type": "string" },
+                "port": { "type": "string" },
+                "name": { "type": "string" },
+                "user": { "type": "string" },
+                "password": { "type": "string" },
+                "type": { "type": "string" },
+                "url": { "type": "string" }
+              },
+              "additionalProperties": false,
+              "minProperties": 1
+            }
+          },
+          "additionalProperties": false
+        },
+        "redis": {
+          "type": "object",
+          "required": ["required", "env_mapping"],
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "min_version": {
+              "type": "string",
+              "description": "Minimum Redis version"
+            },
+            "env_mapping": {
+              "type": "object",
+              "properties": {
+                "host": { "type": "string" },
+                "port": { "type": "string" },
+                "url": { "type": "string" },
+                "password": { "type": "string" }
+              },
+              "additionalProperties": false,
+              "minProperties": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "provides": {
+      "type": "object",
+      "description": "Services this workload provides to others (for database/service workloads)",
+      "properties": {
+        "database": {
+          "type": "object",
+          "required": ["engine", "version", "protocol", "port", "credentials"],
+          "properties": {
+            "engine": {
+              "type": "string",
+              "enum": ["mariadb", "mysql", "postgresql"]
+            },
+            "version": {
+              "type": "string",
+              "description": "Engine version provided"
+            },
+            "protocol": {
+              "type": "string",
+              "enum": ["mysql", "postgresql"]
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "credentials": {
+              "type": "object",
+              "required": ["root_env", "user_env", "password_env", "database_env"],
+              "properties": {
+                "root_env": { "type": "string" },
+                "user_env": { "type": "string" },
+                "password_env": { "type": "string" },
+                "database_env": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "redis": {
+          "type": "object",
+          "required": ["version", "protocol", "port"],
+          "properties": {
+            "version": { "type": "string" },
+            "protocol": {
+              "type": "string",
+              "enum": ["redis"]
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "tags": {
+      "type": "array",
+      "description": "Keywords for filtering and search",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$"
+      },
+      "minItems": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "type": { "const": "runtime" } }
+      },
+      "then": {
+        "required": ["web_server", "services"],
+        "properties": {
+          "web_server": { "type": "string" },
+          "deployment_strategy": { "const": "deployment" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "type": { "const": "database" } }
+      },
+      "then": {
+        "required": ["provides"],
+        "properties": {
+          "web_server": { "const": null },
+          "deployment_strategy": { "const": "statefulset" },
+          "resources": {
+            "required": ["cpu", "memory", "storage"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "type": { "const": "service" } }
+      },
+      "then": {
+        "required": ["provides"],
+        "properties": {
+          "web_server": { "const": null },
+          "deployment_strategy": { "const": "statefulset" },
+          "resources": {
+            "required": ["cpu", "memory", "storage"]
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false
+}

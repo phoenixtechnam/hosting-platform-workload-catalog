@@ -1,14 +1,32 @@
 {
   "name": "Static Site (NGINX)",
   "code": "static-nginx",
-  "type": "static",
+  "type": "runtime",
   "version": "1.27",
   "description": "NGINX serving static HTML/CSS/JS sites",
   "image": null,
   "has_dockerfile": true,
   "min_plan": "starter",
-  "resources": { "cpu": "0.10", "memory": "64Mi" },
-  "ports": [80],
-  "env_vars": [],
+  "runtime": "static",
+  "web_server": "nginx",
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.10",
+    "memory": "64Mi"
+  },
+  "container_port": 80,
+  "mount_path": "/var/www/html",
+  "health_check": {
+    "path": "/health",
+    "command": null,
+    "port": 80,
+    "initial_delay_seconds": 5,
+    "period_seconds": 10
+  },
+  "env_vars": {
+    "configurable": [],
+    "fixed": {}
+  },
+  "services": {},
   "tags": ["static", "nginx", "html"]
 }

@@ -1,5 +1,5 @@
 {
-  "version": "1",
+  "version": "2",
   "name": "Official Workload Catalog",
   "description": "Default workload images for the K8s Hosting Platform",
   "workloads": [
@@ -7,6 +7,9 @@
     "apache-php84",
     "wordpress-php84",
     "static-nginx",
-    "node22"
+    "node22",
+    "mariadb-106",
+    "postgresql-16",
+    "redis-7"
   ]
 }

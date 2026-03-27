@@ -1,0 +1,42 @@
+{
+  "name": "Redis 7",
+  "code": "redis-7",
+  "type": "service",
+  "version": "7",
+  "description": "Redis 7 in-memory cache — dedicated instance",
+  "image": "redis:7-alpine",
+  "has_dockerfile": false,
+  "min_plan": "business",
+  "runtime": "redis",
+  "web_server": null,
+  "deployment_strategy": "statefulset",
+  "resources": {
+    "cpu": "0.10",
+    "memory": "128Mi",
+    "storage": "1Gi"
+  },
+  "container_port": 6379,
+  "mount_path": "/data",
+  "health_check": {
+    "path": null,
+    "command": ["redis-cli", "ping"],
+    "port": null,
+    "initial_delay_seconds": 5,
+    "period_seconds": 10
+  },
+  "env_vars": {
+    "configurable": [],
+    "fixed": {
+      "REDIS_MAXMEMORY": "128mb",
+      "REDIS_MAXMEMORY_POLICY": "allkeys-lru"
+    }
+  },
+  "provides": {
+    "redis": {
+      "version": "7",
+      "protocol": "redis",
+      "port": 6379
+    }
+  },
+  "tags": ["cache", "redis", "key-value"]
+}

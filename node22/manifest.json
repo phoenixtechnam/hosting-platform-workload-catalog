@@ -1,14 +1,48 @@
 {
   "name": "Node.js 22",
   "code": "node22",
-  "type": "nodejs",
+  "type": "runtime",
   "version": "22",
   "description": "Node.js 22 LTS runtime for server-side JavaScript applications",
   "image": null,
   "has_dockerfile": true,
   "min_plan": "starter",
-  "resources": { "cpu": "0.25", "memory": "256Mi" },
-  "ports": [3000],
-  "env_vars": ["NODE_ENV", "PORT"],
+  "runtime": "node",
+  "web_server": "pm2",
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.25",
+    "memory": "256Mi"
+  },
+  "container_port": 3000,
+  "mount_path": "/app",
+  "health_check": {
+    "path": "/health",
+    "command": null,
+    "port": 3000,
+    "initial_delay_seconds": 10,
+    "period_seconds": 10
+  },
+  "env_vars": {
+    "configurable": [
+      "NODE_ENV"
+    ],
+    "fixed": {
+      "PORT": "3000"
+    }
+  },
+  "services": {
+    "database": {
+      "required": false,
+      "engines": [
+        { "type": "mariadb", "min_version": "10.4" },
+        { "type": "mysql", "min_version": "5.7" },
+        { "type": "postgresql", "min_version": "12" }
+      ],
+      "env_mapping": {
+        "url": "DATABASE_URL"
+      }
+    }
+  },
   "tags": ["nodejs", "javascript", "runtime"]
 }

@@ -1,0 +1,53 @@
+{
+  "name": "MariaDB 10.6",
+  "code": "mariadb-106",
+  "type": "database",
+  "version": "10.6",
+  "description": "MariaDB 10.6 LTS — dedicated instance for client databases",
+  "image": "mariadb:10.6",
+  "has_dockerfile": false,
+  "min_plan": "starter",
+  "runtime": "mariadb",
+  "web_server": null,
+  "deployment_strategy": "statefulset",
+  "resources": {
+    "cpu": "0.25",
+    "memory": "256Mi",
+    "storage": "5Gi"
+  },
+  "container_port": 3306,
+  "mount_path": "/var/lib/mysql",
+  "health_check": {
+    "path": null,
+    "command": ["healthcheck.sh", "--connect", "--innodb_initialized"],
+    "port": null,
+    "initial_delay_seconds": 30,
+    "period_seconds": 10
+  },
+  "env_vars": {
+    "configurable": [
+      "MARIADB_ROOT_PASSWORD",
+      "MARIADB_DATABASE",
+      "MARIADB_USER",
+      "MARIADB_PASSWORD"
+    ],
+    "fixed": {
+      "MARIADB_AUTO_UPGRADE": "1"
+    }
+  },
+  "provides": {
+    "database": {
+      "engine": "mariadb",
+      "version": "10.6",
+      "protocol": "mysql",
+      "port": 3306,
+      "credentials": {
+        "root_env": "MARIADB_ROOT_PASSWORD",
+        "user_env": "MARIADB_USER",
+        "password_env": "MARIADB_PASSWORD",
+        "database_env": "MARIADB_DATABASE"
+      }
+    }
+  },
+  "tags": ["database", "mariadb", "mysql-compatible", "sql"]
+}

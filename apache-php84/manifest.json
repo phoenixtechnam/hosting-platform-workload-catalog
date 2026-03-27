@@ -1,14 +1,50 @@
 {
   "name": "Apache + PHP 8.4",
   "code": "apache-php84",
-  "type": "php",
+  "type": "runtime",
   "version": "8.4",
-  "description": "Apache HTTP Server with mod_php 8.4 for traditional PHP hosting",
+  "description": "Apache HTTP Server with mod_php 8.4 for traditional PHP hosting with .htaccess support",
   "image": null,
   "has_dockerfile": true,
   "min_plan": "starter",
-  "resources": { "cpu": "0.25", "memory": "256Mi" },
-  "ports": [80],
-  "env_vars": ["PHP_MEMORY_LIMIT", "UPLOAD_MAX_SIZE"],
-  "tags": ["php", "apache", "web"]
+  "runtime": "php",
+  "web_server": "apache",
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.25",
+    "memory": "256Mi"
+  },
+  "container_port": 80,
+  "mount_path": "/var/www/html",
+  "health_check": {
+    "path": "/",
+    "command": null,
+    "port": 80,
+    "initial_delay_seconds": 10,
+    "period_seconds": 10
+  },
+  "env_vars": {
+    "configurable": [
+      "PHP_MEMORY_LIMIT",
+      "UPLOAD_MAX_SIZE"
+    ],
+    "fixed": {}
+  },
+  "services": {
+    "database": {
+      "required": false,
+      "engines": [
+        { "type": "mariadb", "min_version": "10.4" },
+        { "type": "mysql", "min_version": "5.7" }
+      ],
+      "env_mapping": {
+        "host": "DB_HOST",
+        "port": "DB_PORT",
+        "name": "DB_NAME",
+        "user": "DB_USER",
+        "password": "DB_PASSWORD"
+      }
+    }
+  },
+  "tags": ["php", "apache", "web", "htaccess"]
 }

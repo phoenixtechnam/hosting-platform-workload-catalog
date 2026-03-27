@@ -1,14 +1,47 @@
 {
   "name": "WordPress (PHP 8.4)",
   "code": "wordpress-php84",
-  "type": "wordpress",
+  "type": "runtime",
   "version": "6.x",
   "description": "WordPress with PHP 8.4, optimized for hosting environments",
   "image": null,
   "has_dockerfile": true,
   "min_plan": "starter",
-  "resources": { "cpu": "0.50", "memory": "512Mi" },
-  "ports": [80],
-  "env_vars": ["WORDPRESS_DB_HOST", "WORDPRESS_DB_NAME", "WORDPRESS_DB_USER", "WORDPRESS_DB_PASSWORD"],
+  "runtime": "php",
+  "web_server": "apache",
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.50",
+    "memory": "512Mi"
+  },
+  "container_port": 80,
+  "mount_path": "/var/www/html",
+  "health_check": {
+    "path": "/wp-login.php",
+    "command": null,
+    "port": 80,
+    "initial_delay_seconds": 15,
+    "period_seconds": 10
+  },
+  "env_vars": {
+    "configurable": [],
+    "fixed": {}
+  },
+  "services": {
+    "database": {
+      "required": true,
+      "engines": [
+        { "type": "mariadb", "min_version": "10.4" },
+        { "type": "mysql", "min_version": "5.7" }
+      ],
+      "env_mapping": {
+        "host": "WORDPRESS_DB_HOST",
+        "port": "WORDPRESS_DB_PORT",
+        "name": "WORDPRESS_DB_NAME",
+        "user": "WORDPRESS_DB_USER",
+        "password": "WORDPRESS_DB_PASSWORD"
+      }
+    }
+  },
   "tags": ["wordpress", "cms", "php"]
 }

@@ -1,0 +1,42 @@
+name: Validate Catalog
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Validate all manifests against schema
+        run: npm run validate
+
+      - name: Check JSON formatting
+        run: |
+          error=0
+          for f in catalog.json */manifest.json; do
+            if [ -f "$f" ]; then
+              if ! python3 -m json.tool "$f" > /tmp/formatted.json 2>/dev/null; then
+                echo "✗ $f is not valid JSON"
+                error=1
+              elif ! diff -q "$f" /tmp/formatted.json > /dev/null 2>&1; then
+                echo "✗ $f is not formatted (run: python3 -m json.tool $f > tmp && mv tmp $f)"
+                error=1
+              else
+                echo "✓ $f"
+              fi
+            fi
+          done
+          exit $error
