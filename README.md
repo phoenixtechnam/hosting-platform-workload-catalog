@@ -1,6 +1,10 @@
 # Hosting Platform Workload Catalog
 
-Official workload image catalog for the [K8s Hosting Platform](https://github.com/phoenixtechnam/k8s-hosting-platform).
+Official workload catalog for the [K8s Hosting Platform](https://github.com/phoenixtechnam/k8s-hosting-platform).
+
+This catalog provides **composable building blocks** — runtimes, databases, and services — that clients assemble into their own development environments. Each workload is independently deployable, and multiple workloads can share services (e.g., two runtimes sharing one database).
+
+For **managed applications** (WordPress, Nextcloud, Jitsi, Moodle, etc.) that deploy as self-contained stacks, see the [Application Catalog](https://github.com/phoenixtechnam/hosting-platform-application-catalog). See ADR-026 for the architectural rationale.
 
 ## Workloads
 
@@ -10,7 +14,6 @@ Official workload image catalog for the [K8s Hosting Platform](https://github.co
 |------|---------|------------|---------|----------|
 | NGINX + PHP 8.4 | php | nginx | 8.4 | Starter |
 | Apache + PHP 8.4 | php | apache | 8.4 | Starter |
-| WordPress (PHP 8.4) | php | apache | 6.x | Starter |
 | Static Site (NGINX) | static | nginx | 1.27 | Starter |
 | Node.js 22 | node | pm2 | 22 | Starter |
 
@@ -89,38 +92,39 @@ Every `manifest.json` must conform to `schema/manifest.schema.json`. There are t
 | `provides.database.credentials` | object | Yes | Env var names for `root_env`, `user_env`, `password_env`, `database_env` |
 | `provides.redis` | object | No | Redis provision declaration |
 
-### Example: Runtime Workload (WordPress)
+### Example: Runtime Workload (NGINX + PHP)
 
 ```json
 {
-  "name": "WordPress (PHP 8.4)",
-  "code": "wordpress-php84",
+  "name": "NGINX + PHP 8.4",
+  "code": "nginx-php84",
   "type": "runtime",
-  "version": "6.x",
+  "version": "8.4",
   "runtime": "php",
-  "web_server": "apache",
+  "web_server": "nginx",
   "deployment_strategy": "deployment",
   "container_port": 80,
   "mount_path": "/var/www/html",
   "health_check": {
-    "path": "/wp-login.php",
+    "path": "/health",
     "command": null,
     "port": 80,
-    "initial_delay_seconds": 15,
+    "initial_delay_seconds": 10,
     "period_seconds": 10
   },
   "services": {
     "database": {
-      "required": true,
+      "required": false,
       "engines": [
         { "type": "mariadb", "min_version": "10.4" },
         { "type": "mysql", "min_version": "5.7" }
       ],
       "env_mapping": {
-        "host": "WORDPRESS_DB_HOST",
-        "name": "WORDPRESS_DB_NAME",
-        "user": "WORDPRESS_DB_USER",
-        "password": "WORDPRESS_DB_PASSWORD"
+        "host": "DB_HOST",
+        "port": "DB_PORT",
+        "name": "DB_NAME",
+        "user": "DB_USER",
+        "password": "DB_PASSWORD"
       }
     }
   }

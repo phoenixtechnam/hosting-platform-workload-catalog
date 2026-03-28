@@ -1,11 +1,10 @@
 {
-  "version": "2",
+  "version": "3",
   "name": "Official Workload Catalog",
-  "description": "Default workload images for the K8s Hosting Platform",
+  "description": "Composable runtimes, databases, and services for the K8s Hosting Platform. For managed applications (WordPress, Nextcloud, etc.) see the Application Catalog.",
   "workloads": [
     "nginx-php84",
     "apache-php84",
-    "wordpress-php84",
     "static-nginx",
     "node22",
     "mariadb-106",
