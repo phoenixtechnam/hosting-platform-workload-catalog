@@ -4,11 +4,23 @@
   "description": "Composable runtimes, databases, and services for the K8s Hosting Platform. For managed applications (WordPress, Nextcloud, etc.) see the Application Catalog.",
   "workloads": [
     "nginx-php84",
+    "nginx-php83",
     "apache-php84",
+    "apache-php83",
     "static-nginx",
+    "static-apache",
     "node22",
+    "node20-lts",
+    "ruby-33",
+    "golang-122",
+    "dotnet-8",
+    "java-21",
     "mariadb-106",
     "postgresql-16",
-    "redis-7"
+    "redis-7",
+    "mysql-84",
+    "mongodb-7",
+    "memcached-alpine",
+    "minio"
   ]
 }

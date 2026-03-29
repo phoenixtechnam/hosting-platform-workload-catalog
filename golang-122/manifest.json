@@ -1,0 +1,48 @@
+{
+  "name": "Go 1.22",
+  "code": "golang-122",
+  "type": "runtime",
+  "version": "1.22",
+  "description": "Go 1.22 runtime with multi-stage build for compiled binary applications",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "business",
+  "runtime": "go",
+  "web_server": "built-in",
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.25",
+    "memory": "256Mi"
+  },
+  "container_port": 8080,
+  "mount_path": "/app",
+  "health_check": {
+    "path": "/health",
+    "command": null,
+    "port": 8080,
+    "initial_delay_seconds": 10,
+    "period_seconds": 30
+  },
+  "env_vars": {
+    "configurable": [
+      "GIN_MODE"
+    ],
+    "fixed": {
+      "PORT": "8080"
+    }
+  },
+  "services": {
+    "database": {
+      "required": false,
+      "engines": [
+        { "type": "mariadb", "min_version": "10.4" },
+        { "type": "mysql", "min_version": "5.7" },
+        { "type": "postgresql", "min_version": "12" }
+      ],
+      "env_mapping": {
+        "url": "DATABASE_URL"
+      }
+    }
+  },
+  "tags": ["go", "golang", "compiled"]
+}

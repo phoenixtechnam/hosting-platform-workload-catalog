@@ -1,0 +1,46 @@
+{
+  "name": "MinIO Object Storage",
+  "code": "minio",
+  "type": "service",
+  "version": "latest",
+  "description": "S3-compatible object storage for file uploads, media, and backups",
+  "image": "minio/minio:latest",
+  "has_dockerfile": false,
+  "min_plan": "business",
+  "runtime": "minio",
+  "web_server": null,
+  "deployment_strategy": "statefulset",
+  "resources": {
+    "cpu": "0.25",
+    "memory": "256Mi",
+    "storage": "20Gi"
+  },
+  "container_port": 9000,
+  "mount_path": "/data",
+  "health_check": {
+    "path": "/minio/health/live",
+    "command": null,
+    "port": 9000,
+    "initial_delay_seconds": 15,
+    "period_seconds": 30
+  },
+  "env_vars": {
+    "configurable": ["MINIO_ROOT_USER", "MINIO_ROOT_PASSWORD"],
+    "fixed": {
+      "MINIO_BROWSER": "on"
+    }
+  },
+  "provides": {
+    "object_storage": {
+      "engine": "minio",
+      "protocol": "s3",
+      "port": 9000,
+      "console_port": 9001,
+      "credentials": {
+        "access_key_env": "MINIO_ROOT_USER",
+        "secret_key_env": "MINIO_ROOT_PASSWORD"
+      }
+    }
+  },
+  "tags": ["storage", "s3", "object-storage", "minio"]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "MySQL 8.4",
+  "code": "mysql-84",
+  "type": "database",
+  "version": "8.4",
+  "description": "MySQL 8.4 LTS — dedicated instance for applications requiring MySQL specifically",
+  "image": "mysql:8.4",
+  "has_dockerfile": false,
+  "min_plan": "starter",
+  "runtime": "mysql",
+  "web_server": null,
+  "deployment_strategy": "statefulset",
+  "resources": {
+    "cpu": "0.25",
+    "memory": "256Mi",
+    "storage": "5Gi"
+  },
+  "container_port": 3306,
+  "mount_path": "/var/lib/mysql",
+  "health_check": {
+    "path": null,
+    "command": ["mysqladmin", "ping", "-h", "localhost"],
+    "port": null,
+    "initial_delay_seconds": 60,
+    "period_seconds": 30
+  },
+  "env_vars": {
+    "configurable": ["MYSQL_ROOT_PASSWORD", "MYSQL_DATABASE", "MYSQL_USER", "MYSQL_PASSWORD"],
+    "fixed": {}
+  },
+  "provides": {
+    "database": {
+      "engine": "mysql",
+      "version": "8.4",
+      "protocol": "mysql",
+      "port": 3306,
+      "credentials": {
+        "root_env": "MYSQL_ROOT_PASSWORD",
+        "user_env": "MYSQL_USER",
+        "password_env": "MYSQL_PASSWORD",
+        "database_env": "MYSQL_DATABASE"
+      }
+    }
+  },
+  "tags": ["database", "mysql", "sql"]
+}

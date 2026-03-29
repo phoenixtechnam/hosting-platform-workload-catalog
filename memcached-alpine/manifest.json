@@ -1,0 +1,41 @@
+{
+  "name": "Memcached",
+  "code": "memcached-alpine",
+  "type": "service",
+  "version": "1.6",
+  "description": "Memcached in-memory cache — lightweight alternative to Redis for simple key-value caching",
+  "image": "memcached:1.6-alpine",
+  "has_dockerfile": false,
+  "min_plan": "starter",
+  "runtime": "memcached",
+  "web_server": null,
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.10",
+    "memory": "128Mi"
+  },
+  "container_port": 11211,
+  "mount_path": null,
+  "health_check": {
+    "path": null,
+    "command": ["sh", "-c", "echo stats | nc localhost 11211 | grep -q pid"],
+    "port": null,
+    "initial_delay_seconds": 10,
+    "period_seconds": 30
+  },
+  "env_vars": {
+    "configurable": [],
+    "fixed": {
+      "MEMCACHED_MAX_MEMORY": "128"
+    }
+  },
+  "provides": {
+    "cache": {
+      "engine": "memcached",
+      "version": "1.6",
+      "protocol": "memcached",
+      "port": 11211
+    }
+  },
+  "tags": ["cache", "memcached", "key-value"]
+}

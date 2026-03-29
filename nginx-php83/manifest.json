@@ -1,0 +1,51 @@
+{
+  "name": "NGINX + PHP 8.3",
+  "code": "nginx-php83",
+  "type": "runtime",
+  "version": "8.3",
+  "description": "NGINX web server with PHP-FPM 8.3 for modern PHP applications",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "starter",
+  "runtime": "php",
+  "web_server": "nginx",
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.25",
+    "memory": "256Mi"
+  },
+  "container_port": 80,
+  "mount_path": "/var/www/html",
+  "health_check": {
+    "path": "/health",
+    "command": null,
+    "port": 80,
+    "initial_delay_seconds": 30,
+    "period_seconds": 30
+  },
+  "env_vars": {
+    "configurable": [
+      "PHP_MEMORY_LIMIT",
+      "UPLOAD_MAX_SIZE",
+      "PHP_MAX_EXECUTION_TIME"
+    ],
+    "fixed": {}
+  },
+  "services": {
+    "database": {
+      "required": false,
+      "engines": [
+        { "type": "mariadb", "min_version": "10.4" },
+        { "type": "mysql", "min_version": "5.7" }
+      ],
+      "env_mapping": {
+        "host": "DB_HOST",
+        "port": "DB_PORT",
+        "name": "DB_NAME",
+        "user": "DB_USER",
+        "password": "DB_PASSWORD"
+      }
+    }
+  },
+  "tags": ["php", "nginx", "web"]
+}

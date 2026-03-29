@@ -73,13 +73,17 @@
         "node",
         "python",
         "ruby",
+        "go",
         "dotnet",
         "java",
         "static",
         "mariadb",
         "mysql",
         "postgresql",
-        "redis"
+        "redis",
+        "mongodb",
+        "memcached",
+        "minio"
       ]
     },
     "web_server": {
@@ -122,9 +126,8 @@
       "maximum": 65535
     },
     "mount_path": {
-      "type": "string",
-      "description": "Path where the client PVC or data volume is mounted",
-      "pattern": "^/"
+      "type": ["string", "null"],
+      "description": "Path where the client PVC or data volume is mounted (null for stateless services)"
     },
     "health_check": {
       "type": "object",
@@ -283,7 +286,7 @@
           "properties": {
             "engine": {
               "type": "string",
-              "enum": ["mariadb", "mysql", "postgresql"]
+              "enum": ["mariadb", "mysql", "postgresql", "mongodb"]
             },
             "version": {
               "type": "string",
@@ -291,7 +294,7 @@
             },
             "protocol": {
               "type": "string",
-              "enum": ["mysql", "postgresql"]
+              "enum": ["mysql", "postgresql", "mongodb"]
             },
             "port": {
               "type": "integer",
@@ -325,6 +328,48 @@
               "type": "integer",
               "minimum": 1,
               "maximum": 65535
+            }
+          },
+          "additionalProperties": false
+        },
+        "cache": {
+          "type": "object",
+          "required": ["engine", "protocol", "port"],
+          "properties": {
+            "engine": { "type": "string" },
+            "version": { "type": "string" },
+            "protocol": { "type": "string" },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            }
+          },
+          "additionalProperties": false
+        },
+        "object_storage": {
+          "type": "object",
+          "required": ["engine", "protocol", "port"],
+          "properties": {
+            "engine": { "type": "string" },
+            "protocol": { "type": "string" },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "console_port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "credentials": {
+              "type": "object",
+              "properties": {
+                "access_key_env": { "type": "string" },
+                "secret_key_env": { "type": "string" }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
@@ -377,11 +422,7 @@
       "then": {
         "required": ["provides"],
         "properties": {
-          "web_server": { "const": null },
-          "deployment_strategy": { "const": "statefulset" },
-          "resources": {
-            "required": ["cpu", "memory", "storage"]
-          }
+          "web_server": { "const": null }
         }
       }
     }

@@ -1,0 +1,49 @@
+{
+  "name": ".NET 8",
+  "code": "dotnet-8",
+  "type": "runtime",
+  "version": "8.0",
+  "description": "ASP.NET Core 8.0 runtime with Kestrel web server for .NET applications",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "starter",
+  "runtime": "dotnet",
+  "web_server": "kestrel",
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.25",
+    "memory": "256Mi"
+  },
+  "container_port": 8080,
+  "mount_path": "/app",
+  "health_check": {
+    "path": "/health",
+    "command": null,
+    "port": 8080,
+    "initial_delay_seconds": 30,
+    "period_seconds": 30
+  },
+  "env_vars": {
+    "configurable": [
+      "ASPNETCORE_ENVIRONMENT",
+      "DOTNET_URLS"
+    ],
+    "fixed": {
+      "ASPNETCORE_URLS": "http://+:8080"
+    }
+  },
+  "services": {
+    "database": {
+      "required": false,
+      "engines": [
+        { "type": "mariadb", "min_version": "10.4" },
+        { "type": "mysql", "min_version": "5.7" },
+        { "type": "postgresql", "min_version": "12" }
+      ],
+      "env_mapping": {
+        "url": "DATABASE_URL"
+      }
+    }
+  },
+  "tags": ["dotnet", "csharp", "aspnet"]
+}

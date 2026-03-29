@@ -1,0 +1,32 @@
+{
+  "name": "Static Site (Apache)",
+  "code": "static-apache",
+  "type": "runtime",
+  "version": "2.4",
+  "description": "Apache HTTP Server serving static HTML/CSS/JS sites",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "starter",
+  "runtime": "static",
+  "web_server": "apache",
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.10",
+    "memory": "64Mi"
+  },
+  "container_port": 80,
+  "mount_path": "/usr/local/apache2/htdocs",
+  "health_check": {
+    "path": "/",
+    "command": null,
+    "port": 80,
+    "initial_delay_seconds": 10,
+    "period_seconds": 30
+  },
+  "env_vars": {
+    "configurable": [],
+    "fixed": {}
+  },
+  "services": {},
+  "tags": ["static", "apache", "html"]
+}

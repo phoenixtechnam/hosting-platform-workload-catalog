@@ -1,0 +1,49 @@
+{
+  "name": "Java 21",
+  "code": "java-21",
+  "type": "runtime",
+  "version": "21",
+  "description": "Eclipse Temurin Java 21 runtime for Spring Boot and JVM applications",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "starter",
+  "runtime": "java",
+  "web_server": "built-in",
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.50",
+    "memory": "512Mi"
+  },
+  "container_port": 8080,
+  "mount_path": "/app",
+  "health_check": {
+    "path": "/actuator/health",
+    "command": null,
+    "port": 8080,
+    "initial_delay_seconds": 60,
+    "period_seconds": 30
+  },
+  "env_vars": {
+    "configurable": [
+      "JAVA_OPTS",
+      "SPRING_PROFILES_ACTIVE"
+    ],
+    "fixed": {
+      "SERVER_PORT": "8080"
+    }
+  },
+  "services": {
+    "database": {
+      "required": false,
+      "engines": [
+        { "type": "mariadb", "min_version": "10.4" },
+        { "type": "mysql", "min_version": "5.7" },
+        { "type": "postgresql", "min_version": "12" }
+      ],
+      "env_mapping": {
+        "url": "DATABASE_URL"
+      }
+    }
+  },
+  "tags": ["java", "spring-boot", "jvm"]
+}

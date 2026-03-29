@@ -1,0 +1,49 @@
+{
+  "name": "Ruby 3.3",
+  "code": "ruby-33",
+  "type": "runtime",
+  "version": "3.3",
+  "description": "Ruby 3.3 runtime with Puma web server for Rails and Rack applications",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "starter",
+  "runtime": "ruby",
+  "web_server": "puma",
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.25",
+    "memory": "256Mi"
+  },
+  "container_port": 3000,
+  "mount_path": "/app",
+  "health_check": {
+    "path": "/health",
+    "command": null,
+    "port": 3000,
+    "initial_delay_seconds": 30,
+    "period_seconds": 30
+  },
+  "env_vars": {
+    "configurable": [
+      "RAILS_ENV",
+      "RUBY_GC_HEAP_INIT_SLOTS"
+    ],
+    "fixed": {
+      "PORT": "3000"
+    }
+  },
+  "services": {
+    "database": {
+      "required": false,
+      "engines": [
+        { "type": "mariadb", "min_version": "10.4" },
+        { "type": "mysql", "min_version": "5.7" },
+        { "type": "postgresql", "min_version": "12" }
+      ],
+      "env_mapping": {
+        "url": "DATABASE_URL"
+      }
+    }
+  },
+  "tags": ["ruby", "rails", "puma"]
+}
