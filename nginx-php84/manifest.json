@@ -20,8 +20,8 @@
     "path": "/health",
     "command": null,
     "port": 80,
-    "initial_delay_seconds": 10,
-    "period_seconds": 10
+    "initial_delay_seconds": 30,
+    "period_seconds": 30
   },
   "env_vars": {
     "configurable": [

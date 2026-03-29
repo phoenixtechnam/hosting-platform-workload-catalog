@@ -21,8 +21,8 @@
     "path": null,
     "command": ["redis-cli", "ping"],
     "port": null,
-    "initial_delay_seconds": 5,
-    "period_seconds": 10
+    "initial_delay_seconds": 10,
+    "period_seconds": 30
   },
   "env_vars": {
     "configurable": [],

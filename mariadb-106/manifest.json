@@ -21,8 +21,8 @@
     "path": null,
     "command": ["healthcheck.sh", "--connect", "--innodb_initialized"],
     "port": null,
-    "initial_delay_seconds": 30,
-    "period_seconds": 10
+    "initial_delay_seconds": 60,
+    "period_seconds": 30
   },
   "env_vars": {
     "configurable": [
