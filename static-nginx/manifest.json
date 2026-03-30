@@ -1,5 +1,5 @@
 {
-  "name": "Static Site (NGINX)",
+  "name": "Static Website (via NGINX)",
   "code": "static-nginx",
   "type": "runtime",
   "version": "1.27",

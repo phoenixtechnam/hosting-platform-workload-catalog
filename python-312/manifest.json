@@ -1,0 +1,50 @@
+{
+  "name": "Python 3.12",
+  "code": "python-312",
+  "type": "runtime",
+  "version": "3.12",
+  "description": "Python 3.12 runtime for Django, Flask, FastAPI, and other Python web frameworks",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "starter",
+  "runtime": "python",
+  "web_server": "gunicorn",
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.25",
+    "memory": "256Mi"
+  },
+  "container_port": 8000,
+  "mount_path": "/app",
+  "health_check": {
+    "path": "/health",
+    "command": null,
+    "port": 8000,
+    "initial_delay_seconds": 30,
+    "period_seconds": 30
+  },
+  "env_vars": {
+    "configurable": [
+      "DJANGO_SETTINGS_MODULE",
+      "FLASK_APP",
+      "PYTHONPATH"
+    ],
+    "fixed": {
+      "PORT": "8000",
+      "PYTHONUNBUFFERED": "1"
+    }
+  },
+  "services": {
+    "database": {
+      "required": false,
+      "engines": [
+        { "type": "postgresql", "min_version": "12" },
+        { "type": "mariadb", "min_version": "10.4" },
+        { "type": "mysql", "min_version": "5.7" }
+      ],
+      "env_mapping": { "url": "DATABASE_URL" }
+    }
+  },
+  "tags": ["python", "django", "flask", "fastapi", "runtime"],
+  "volume_group": "app/python"
+}

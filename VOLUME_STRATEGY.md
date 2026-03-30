@@ -46,7 +46,10 @@ Each runtime gets its own subPath to avoid data confusion between different lang
 |----------|-------------|---------------------|
 | node22 | `app/node` | `/app` |
 | node20-lts | `app/node` | `/app` |
+| bun-latest | `app/bun` | `/app` |
+| python-312 | `app/python` | `/app` |
 | ruby-33 | `app/ruby` | `/app` |
+| rust-stable | `app/rust` | `/app` |
 | golang-122 | `app/golang` | `/app` |
 | dotnet-8 | `app/dotnet` | `/app` |
 | java-21 | `app/java` | `/app` |
@@ -58,8 +61,11 @@ Each database engine has its own subPath. MariaDB and MySQL share `db/mariadb` b
 | Workload | volume_group | Container mount_path |
 |----------|-------------|---------------------|
 | mariadb-106 | `db/mariadb` | `/var/lib/mysql` |
+| mariadb-114 | `db/mariadb` | `/var/lib/mysql` |
 | mysql-84 | `db/mariadb` | `/var/lib/mysql` |
+| mysql-90 | `db/mariadb` | `/var/lib/mysql` |
 | postgresql-16 | `db/postgresql` | `/var/lib/postgresql/data` |
+| postgresql-17 | `db/postgresql` | `/var/lib/postgresql/data` |
 | mongodb-7 | `db/mongodb` | `/data/db` |
 
 ### Cache (`cache/{engine}`)
@@ -87,7 +93,10 @@ client-storage/
 ├── web/                 ← PHP sites, static sites
 ├── app/
 │   ├── node/            ← Node.js applications
+│   ├── bun/             ← Bun applications
+│   ├── python/          ← Python (Django, Flask, FastAPI)
 │   ├── ruby/            ← Ruby applications
+│   ├── rust/            ← Rust (Actix, Axum, Rocket)
 │   ├── golang/          ← Go applications
 │   ├── dotnet/          ← .NET applications
 │   └── java/            ← Java applications

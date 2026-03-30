@@ -21,6 +21,12 @@
     "mysql-84",
     "mongodb-7",
     "memcached-alpine",
-    "minio"
+    "minio",
+    "python-312",
+    "bun-latest",
+    "rust-stable",
+    "mariadb-114",
+    "postgresql-17",
+    "mysql-90"
   ]
 }

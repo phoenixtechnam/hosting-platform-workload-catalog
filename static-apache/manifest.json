@@ -1,5 +1,5 @@
 {
-  "name": "Static Site (Apache)",
+  "name": "Static Website (via Apache)",
   "code": "static-apache",
   "type": "runtime",
   "version": "2.4",

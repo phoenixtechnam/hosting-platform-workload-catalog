@@ -1,0 +1,47 @@
+{
+  "name": "Rust (Stable)",
+  "code": "rust-stable",
+  "type": "runtime",
+  "version": "stable",
+  "description": "Rust stable runtime for compiled web services — Actix, Axum, Rocket, and other Rust web frameworks",
+  "image": null,
+  "has_dockerfile": true,
+  "min_plan": "business",
+  "runtime": "rust",
+  "web_server": null,
+  "deployment_strategy": "deployment",
+  "resources": {
+    "cpu": "0.50",
+    "memory": "512Mi"
+  },
+  "container_port": 8080,
+  "mount_path": "/app",
+  "health_check": {
+    "path": "/health",
+    "command": null,
+    "port": 8080,
+    "initial_delay_seconds": 10,
+    "period_seconds": 30
+  },
+  "env_vars": {
+    "configurable": [
+      "RUST_LOG",
+      "RUST_BACKTRACE"
+    ],
+    "fixed": {
+      "PORT": "8080"
+    }
+  },
+  "services": {
+    "database": {
+      "required": false,
+      "engines": [
+        { "type": "postgresql", "min_version": "12" },
+        { "type": "mariadb", "min_version": "10.4" }
+      ],
+      "env_mapping": { "url": "DATABASE_URL" }
+    }
+  },
+  "tags": ["rust", "actix", "axum", "rocket", "runtime"],
+  "volume_group": "app/rust"
+}

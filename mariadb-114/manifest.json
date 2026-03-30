@@ -1,0 +1,54 @@
+{
+  "name": "MariaDB 11.4",
+  "code": "mariadb-114",
+  "type": "database",
+  "version": "11.4",
+  "description": "MariaDB 11.4 LTS — current long-term support release",
+  "image": "mariadb:11.4",
+  "has_dockerfile": false,
+  "min_plan": "starter",
+  "runtime": "mariadb",
+  "web_server": null,
+  "deployment_strategy": "statefulset",
+  "resources": {
+    "cpu": "0.25",
+    "memory": "256Mi",
+    "storage": "5Gi"
+  },
+  "container_port": 3306,
+  "mount_path": "/var/lib/mysql",
+  "health_check": {
+    "path": null,
+    "command": ["healthcheck.sh", "--connect", "--innodb_initialized"],
+    "port": null,
+    "initial_delay_seconds": 60,
+    "period_seconds": 30
+  },
+  "env_vars": {
+    "configurable": [
+      "MARIADB_ROOT_PASSWORD",
+      "MARIADB_DATABASE",
+      "MARIADB_USER",
+      "MARIADB_PASSWORD"
+    ],
+    "fixed": {
+      "MARIADB_AUTO_UPGRADE": "1"
+    }
+  },
+  "provides": {
+    "database": {
+      "engine": "mariadb",
+      "version": "11.4",
+      "protocol": "mysql",
+      "port": 3306,
+      "credentials": {
+        "root_env": "MARIADB_ROOT_PASSWORD",
+        "user_env": "MARIADB_USER",
+        "password_env": "MARIADB_PASSWORD",
+        "database_env": "MARIADB_DATABASE"
+      }
+    }
+  },
+  "tags": ["database", "mariadb", "mysql-compatible", "sql", "lts"],
+  "volume_group": "db/mariadb"
+}
