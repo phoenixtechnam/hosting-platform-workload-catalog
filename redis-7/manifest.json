@@ -15,8 +15,6 @@
     "memory": "128Mi",
     "storage": "1Gi"
   },
-  "container_port": 6379,
-  "mount_path": "/data",
   "health_check": {
     "path": null,
     "command": [
@@ -27,24 +25,30 @@
     "initial_delay_seconds": 10,
     "period_seconds": 30
   },
-  "env_vars": {
-    "configurable": [],
-    "fixed": {
-      "REDIS_MAXMEMORY": "128mb",
-      "REDIS_MAXMEMORY_POLICY": "allkeys-lru"
-    }
-  },
-  "provides": {
-    "redis": {
-      "version": "7",
-      "protocol": "redis",
-      "port": 6379
-    }
-  },
   "tags": [
     "cache",
     "redis",
     "key-value"
   ],
-  "volume_group": "cache/redis"
+  "exposes": {
+    "ports": [
+      {
+        "port": 6379,
+        "protocol": "redis",
+        "name": "cache",
+        "publishable": false
+      }
+    ],
+    "volumes": [
+      {
+        "description": "Cache data",
+        "local_path": "cache/redis",
+        "container_path": "/data"
+      }
+    ],
+    "env_vars": {
+      "configurable": [],
+      "fixed": {}
+    }
+  }
 }

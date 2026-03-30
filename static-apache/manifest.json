@@ -14,8 +14,6 @@
     "cpu": "0.10",
     "memory": "64Mi"
   },
-  "container_port": 80,
-  "mount_path": "/usr/local/apache2/htdocs",
   "health_check": {
     "path": "/",
     "command": null,
@@ -23,15 +21,31 @@
     "initial_delay_seconds": 10,
     "period_seconds": 30
   },
-  "env_vars": {
-    "configurable": [],
-    "fixed": {}
-  },
   "services": {},
   "tags": [
     "static",
     "apache",
     "html"
   ],
-  "volume_group": "web"
+  "exposes": {
+    "ports": [
+      {
+        "port": 80,
+        "protocol": "http",
+        "name": "web",
+        "publishable": true
+      }
+    ],
+    "volumes": [
+      {
+        "description": "Static files",
+        "local_path": "web",
+        "container_path": "/usr/local/apache2/htdocs"
+      }
+    ],
+    "env_vars": {
+      "configurable": [],
+      "fixed": {}
+    }
+  }
 }

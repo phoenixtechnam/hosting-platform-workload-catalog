@@ -14,8 +14,6 @@
     "cpu": "0.50",
     "memory": "512Mi"
   },
-  "container_port": 8080,
-  "mount_path": "/app",
   "health_check": {
     "path": "/health",
     "command": null,
@@ -23,25 +21,55 @@
     "initial_delay_seconds": 10,
     "period_seconds": 30
   },
-  "env_vars": {
-    "configurable": [
-      "RUST_LOG",
-      "RUST_BACKTRACE"
-    ],
-    "fixed": {
-      "PORT": "8080"
-    }
-  },
   "services": {
     "database": {
       "required": false,
       "engines": [
-        { "type": "postgresql", "min_version": "12" },
-        { "type": "mariadb", "min_version": "10.4" }
+        {
+          "type": "postgresql",
+          "min_version": "12"
+        },
+        {
+          "type": "mariadb",
+          "min_version": "10.4"
+        }
       ],
-      "env_mapping": { "url": "DATABASE_URL" }
+      "env_mapping": {
+        "url": "DATABASE_URL"
+      }
     }
   },
-  "tags": ["rust", "actix", "axum", "rocket", "runtime"],
-  "volume_group": "app/rust"
+  "tags": [
+    "rust",
+    "actix",
+    "axum",
+    "rocket",
+    "runtime"
+  ],
+  "exposes": {
+    "ports": [
+      {
+        "port": 8080,
+        "protocol": "http",
+        "name": "app",
+        "publishable": true
+      }
+    ],
+    "volumes": [
+      {
+        "description": "Application directory",
+        "local_path": "app/rust",
+        "container_path": "/app"
+      }
+    ],
+    "env_vars": {
+      "configurable": [
+        "RUST_LOG",
+        "DATABASE_URL"
+      ],
+      "fixed": {
+        "PORT": "8080"
+      }
+    }
+  }
 }

@@ -15,8 +15,6 @@
     "memory": "512Mi",
     "storage": "10Gi"
   },
-  "container_port": 27017,
-  "mount_path": "/data/db",
   "health_check": {
     "path": null,
     "command": [
@@ -28,33 +26,44 @@
     "initial_delay_seconds": 30,
     "period_seconds": 30
   },
-  "env_vars": {
-    "configurable": [
-      "MONGO_INITDB_ROOT_USERNAME",
-      "MONGO_INITDB_ROOT_PASSWORD",
-      "MONGO_INITDB_DATABASE"
-    ],
-    "fixed": {}
-  },
-  "provides": {
-    "database": {
-      "engine": "mongodb",
-      "version": "7",
-      "protocol": "mongodb",
-      "port": 27017,
-      "credentials": {
-        "root_env": "MONGO_INITDB_ROOT_USERNAME",
-        "user_env": "MONGO_INITDB_ROOT_USERNAME",
-        "password_env": "MONGO_INITDB_ROOT_PASSWORD",
-        "database_env": "MONGO_INITDB_DATABASE"
-      }
-    }
-  },
   "tags": [
     "database",
     "mongodb",
     "nosql",
     "document"
   ],
-  "volume_group": "db/mongodb"
+  "exposes": {
+    "ports": [
+      {
+        "port": 27017,
+        "protocol": "mongodb",
+        "name": "database",
+        "publishable": false
+      }
+    ],
+    "volumes": [
+      {
+        "description": "Database data",
+        "local_path": "db/mongodb",
+        "container_path": "/data/db"
+      }
+    ],
+    "env_vars": {
+      "configurable": [
+        "MONGO_INITDB_DATABASE"
+      ],
+      "generated": [
+        "MONGO_INITDB_ROOT_USERNAME",
+        "MONGO_INITDB_ROOT_PASSWORD"
+      ],
+      "fixed": {}
+    },
+    "services": {
+      "database": {
+        "engine": "mongodb",
+        "version": "7",
+        "protocol": "mongodb"
+      }
+    }
+  }
 }

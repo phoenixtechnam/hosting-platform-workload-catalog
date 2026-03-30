@@ -14,23 +14,12 @@
     "cpu": "0.25",
     "memory": "256Mi"
   },
-  "container_port": 3000,
-  "mount_path": "/app",
   "health_check": {
     "path": "/health",
     "command": null,
     "port": 3000,
     "initial_delay_seconds": 30,
     "period_seconds": 30
-  },
-  "env_vars": {
-    "configurable": [
-      "RAILS_ENV",
-      "RUBY_GC_HEAP_INIT_SLOTS"
-    ],
-    "fixed": {
-      "PORT": "3000"
-    }
   },
   "services": {
     "database": {
@@ -59,5 +48,30 @@
     "rails",
     "puma"
   ],
-  "volume_group": "app/ruby"
+  "exposes": {
+    "ports": [
+      {
+        "port": 3000,
+        "protocol": "http",
+        "name": "app",
+        "publishable": true
+      }
+    ],
+    "volumes": [
+      {
+        "description": "Application directory",
+        "local_path": "app/ruby",
+        "container_path": "/app"
+      }
+    ],
+    "env_vars": {
+      "configurable": [
+        "RAILS_ENV",
+        "DATABASE_URL"
+      ],
+      "fixed": {
+        "PORT": "3000"
+      }
+    }
+  }
 }

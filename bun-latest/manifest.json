@@ -14,8 +14,6 @@
     "cpu": "0.25",
     "memory": "256Mi"
   },
-  "container_port": 3000,
-  "mount_path": "/app",
   "health_check": {
     "path": "/health",
     "command": null,
@@ -23,24 +21,54 @@
     "initial_delay_seconds": 15,
     "period_seconds": 30
   },
-  "env_vars": {
-    "configurable": [
-      "NODE_ENV"
-    ],
-    "fixed": {
-      "PORT": "3000"
-    }
-  },
   "services": {
     "database": {
       "required": false,
       "engines": [
-        { "type": "postgresql", "min_version": "12" },
-        { "type": "mariadb", "min_version": "10.4" }
+        {
+          "type": "postgresql",
+          "min_version": "12"
+        },
+        {
+          "type": "mariadb",
+          "min_version": "10.4"
+        }
       ],
-      "env_mapping": { "url": "DATABASE_URL" }
+      "env_mapping": {
+        "url": "DATABASE_URL"
+      }
     }
   },
-  "tags": ["bun", "javascript", "typescript", "runtime"],
-  "volume_group": "app/bun"
+  "tags": [
+    "bun",
+    "javascript",
+    "typescript",
+    "runtime"
+  ],
+  "exposes": {
+    "ports": [
+      {
+        "port": 3000,
+        "protocol": "http",
+        "name": "app",
+        "publishable": true
+      }
+    ],
+    "volumes": [
+      {
+        "description": "Application directory",
+        "local_path": "app/bun",
+        "container_path": "/app"
+      }
+    ],
+    "env_vars": {
+      "configurable": [
+        "NODE_ENV",
+        "DATABASE_URL"
+      ],
+      "fixed": {
+        "PORT": "3000"
+      }
+    }
+  }
 }

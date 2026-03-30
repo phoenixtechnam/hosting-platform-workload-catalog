@@ -14,22 +14,12 @@
     "cpu": "0.25",
     "memory": "256Mi"
   },
-  "container_port": 3000,
-  "mount_path": "/app",
   "health_check": {
     "path": "/health",
     "command": null,
     "port": 3000,
     "initial_delay_seconds": 30,
     "period_seconds": 30
-  },
-  "env_vars": {
-    "configurable": [
-      "NODE_ENV"
-    ],
-    "fixed": {
-      "PORT": "3000"
-    }
   },
   "services": {
     "database": {
@@ -58,5 +48,30 @@
     "javascript",
     "runtime"
   ],
-  "volume_group": "app/node"
+  "exposes": {
+    "ports": [
+      {
+        "port": 3000,
+        "protocol": "http",
+        "name": "app",
+        "publishable": true
+      }
+    ],
+    "volumes": [
+      {
+        "description": "Application directory",
+        "local_path": "app/node",
+        "container_path": "/app"
+      }
+    ],
+    "env_vars": {
+      "configurable": [
+        "NODE_ENV",
+        "DATABASE_URL"
+      ],
+      "fixed": {
+        "PORT": "3000"
+      }
+    }
+  }
 }

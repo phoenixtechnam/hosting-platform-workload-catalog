@@ -2,7 +2,7 @@
 
 ## Overview
 
-Each client gets a single PersistentVolumeClaim (`client-storage`) sized to their hosting plan quota. Workloads mount subdirectories of this PVC using Kubernetes `subPath`, with the path determined by the workload's `volume_group` field.
+Each client gets a single PersistentVolumeClaim (`client-storage`) sized to their hosting plan quota. Workloads mount subdirectories of this PVC using Kubernetes `subPath`, with the path determined by `exposes.volumes[].local_path` in each workload manifest.
 
 ## How It Works
 
@@ -16,75 +16,48 @@ containers:
   - name: my-website                 # e.g. nginx-php84
     volumeMounts:
       - name: client-storage
-        mountPath: /var/www/html     # From manifest: mount_path
-        subPath: web                  # From manifest: volume_group
+        mountPath: /var/www/html     # From exposes.volumes[].container_path
+        subPath: web                  # From exposes.volumes[].local_path
 ```
 
-- **`volume_group`** → Kubernetes `subPath` (where on the PVC)
-- **`mount_path`** → Kubernetes `mountPath` (where inside the container)
+Volume mapping from the manifest's `exposes` section:
+- **`local_path`** → Kubernetes `subPath` (where on the PVC)
+- **`container_path`** → Kubernetes `mountPath` (where inside the container)
+- **`description`** → Displayed in the UI
 
-## Volume Groups
+## Exposes Section
 
-### Web Runtimes (`web`)
+Every workload declares an `exposes` section with ports, volumes, environment variables, and optionally services it provides:
 
-All web servers share the same `web` subPath so switching between nginx and apache preserves files.
+```json
+{
+  "exposes": {
+    "ports": [
+      { "port": 80, "protocol": "http", "name": "web", "publishable": true }
+    ],
+    "volumes": [
+      { "description": "Document root", "local_path": "web", "container_path": "/var/www/html" }
+    ],
+    "env_vars": {
+      "configurable": ["PHP_MEMORY_LIMIT"],
+      "generated": ["DB_PASSWORD"],
+      "fixed": { "PORT": "3000" }
+    },
+    "services": {
+      "database": { "engine": "mariadb", "version": "10.6", "protocol": "mysql" }
+    }
+  }
+}
+```
 
-| Workload | volume_group | Container mount_path |
-|----------|-------------|---------------------|
-| nginx-php84 | `web` | `/var/www/html` |
-| nginx-php83 | `web` | `/var/www/html` |
-| apache-php84 | `web` | `/var/www/html` |
-| apache-php83 | `web` | `/var/www/html` |
-| static-nginx | `web` | `/var/www/html` |
-| static-apache | `web` | `/var/www/html` |
+### Ports
+- `publishable: true` — can be mapped to a domain via ingress (web, API, console)
+- `publishable: false` — internal only (databases, caches)
 
-### Application Runtimes (`app/{runtime}`)
-
-Each runtime gets its own subPath to avoid data confusion between different languages.
-
-| Workload | volume_group | Container mount_path |
-|----------|-------------|---------------------|
-| node22 | `app/node` | `/app` |
-| node20-lts | `app/node` | `/app` |
-| bun-latest | `app/bun` | `/app` |
-| python-312 | `app/python` | `/app` |
-| ruby-33 | `app/ruby` | `/app` |
-| rust-stable | `app/rust` | `/app` |
-| golang-122 | `app/golang` | `/app` |
-| dotnet-8 | `app/dotnet` | `/app` |
-| java-21 | `app/java` | `/app` |
-
-### Databases (`db/{engine}`)
-
-Each database engine has its own subPath. MariaDB and MySQL share `db/mariadb` because they have compatible data formats.
-
-| Workload | volume_group | Container mount_path |
-|----------|-------------|---------------------|
-| mariadb-106 | `db/mariadb` | `/var/lib/mysql` |
-| mariadb-114 | `db/mariadb` | `/var/lib/mysql` |
-| mysql-84 | `db/mariadb` | `/var/lib/mysql` |
-| mysql-90 | `db/mariadb` | `/var/lib/mysql` |
-| postgresql-16 | `db/postgresql` | `/var/lib/postgresql/data` |
-| postgresql-17 | `db/postgresql` | `/var/lib/postgresql/data` |
-| mongodb-7 | `db/mongodb` | `/data/db` |
-
-### Cache (`cache/{engine}`)
-
-| Workload | volume_group | Container mount_path |
-|----------|-------------|---------------------|
-| redis-7 | `cache/redis` | `/data` |
-
-### Storage (`storage/{engine}`)
-
-| Workload | volume_group | Container mount_path |
-|----------|-------------|---------------------|
-| minio | `storage/minio` | `/data` |
-
-### No Volume
-
-| Workload | volume_group | Notes |
-|----------|-------------|-------|
-| memcached-alpine | `null` | Purely in-memory, no persistent storage |
+### Environment Variables
+- `configurable` — user can set these when deploying
+- `generated` — platform auto-generates (passwords, secrets)
+- `fixed` — hardcoded values the workload requires
 
 ## PVC Layout on Disk
 
@@ -112,18 +85,18 @@ client-storage/
 
 ## Key Benefits
 
-- **Seamless switching**: Changing from nginx-php84 to apache-php84 uses the same `web` subPath — zero data migration
+- **Seamless switching**: Changing from nginx-php84 to apache-php84 uses the same `web` local_path — zero data migration
 - **Version upgrades**: Upgrading node20→node22 keeps the same `app/node` data
 - **Single PVC**: One storage quota per client, easy to monitor and back up
 - **SFTP access**: Mount the whole PVC or `web` subPath for file management
-- **Isolation**: Each engine's data is in its own directory — no cross-contamination
+- **At-a-glance info**: UI shows ports, volumes, and env vars for every workload
 
 ## Adding New Workloads
 
-When creating a new workload manifest, set `volume_group` to:
+Set `exposes.volumes[].local_path` to:
 - `web` — if it serves the same web files as PHP/static workloads
-- `app/{runtime}` — for application runtimes (use the language/framework name)
+- `app/{runtime}` — for application runtimes (use the language name)
 - `db/{engine}` — for databases (use the engine name)
 - `cache/{engine}` — for caching services
 - `storage/{engine}` — for object/file storage services
-- `null` — for in-memory-only services that need no persistent storage
+- Empty array `[]` — for in-memory services that need no persistent storage

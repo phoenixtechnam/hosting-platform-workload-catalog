@@ -15,36 +15,55 @@
     "memory": "256Mi",
     "storage": "5Gi"
   },
-  "container_port": 5432,
-  "mount_path": "/var/lib/postgresql/data",
   "health_check": {
     "path": null,
-    "command": ["pg_isready", "-U", "postgres"],
+    "command": [
+      "pg_isready",
+      "-U",
+      "postgres"
+    ],
     "port": null,
     "initial_delay_seconds": 30,
     "period_seconds": 30
   },
-  "env_vars": {
-    "configurable": [
-      "POSTGRES_PASSWORD",
-      "POSTGRES_USER",
-      "POSTGRES_DB"
+  "tags": [
+    "database",
+    "postgresql",
+    "postgres",
+    "sql"
+  ],
+  "exposes": {
+    "ports": [
+      {
+        "port": 5432,
+        "protocol": "postgresql",
+        "name": "database",
+        "publishable": false
+      }
     ],
-    "fixed": {}
-  },
-  "provides": {
-    "database": {
-      "engine": "postgresql",
-      "version": "17",
-      "protocol": "postgresql",
-      "port": 5432,
-      "credentials": {
-        "user_env": "POSTGRES_USER",
-        "password_env": "POSTGRES_PASSWORD",
-        "database_env": "POSTGRES_DB"
+    "volumes": [
+      {
+        "description": "Database data",
+        "local_path": "db/postgresql",
+        "container_path": "/var/lib/postgresql/data"
+      }
+    ],
+    "env_vars": {
+      "configurable": [
+        "POSTGRES_DB",
+        "POSTGRES_USER"
+      ],
+      "generated": [
+        "POSTGRES_PASSWORD"
+      ],
+      "fixed": {}
+    },
+    "services": {
+      "database": {
+        "engine": "postgresql",
+        "version": "17",
+        "protocol": "postgresql"
       }
     }
-  },
-  "tags": ["database", "postgresql", "postgres", "sql"],
-  "volume_group": "db/postgresql"
+  }
 }

@@ -15,8 +15,6 @@
     "memory": "256Mi",
     "storage": "20Gi"
   },
-  "container_port": 9000,
-  "mount_path": "/data",
   "health_check": {
     "path": "/minio/health/live",
     "command": null,
@@ -24,32 +22,49 @@
     "initial_delay_seconds": 15,
     "period_seconds": 30
   },
-  "env_vars": {
-    "configurable": [
-      "MINIO_ROOT_USER",
-      "MINIO_ROOT_PASSWORD"
-    ],
-    "fixed": {
-      "MINIO_BROWSER": "on"
-    }
-  },
-  "provides": {
-    "object_storage": {
-      "engine": "minio",
-      "protocol": "s3",
-      "port": 9000,
-      "console_port": 9001,
-      "credentials": {
-        "access_key_env": "MINIO_ROOT_USER",
-        "secret_key_env": "MINIO_ROOT_PASSWORD"
-      }
-    }
-  },
   "tags": [
     "storage",
     "s3",
     "object-storage",
     "minio"
   ],
-  "volume_group": "storage/minio"
+  "exposes": {
+    "ports": [
+      {
+        "port": 9000,
+        "protocol": "http",
+        "name": "api",
+        "publishable": true
+      },
+      {
+        "port": 9001,
+        "protocol": "http",
+        "name": "console",
+        "publishable": true
+      }
+    ],
+    "volumes": [
+      {
+        "description": "Object storage",
+        "local_path": "storage/minio",
+        "container_path": "/data"
+      }
+    ],
+    "env_vars": {
+      "configurable": [
+        "MINIO_BROWSER"
+      ],
+      "generated": [
+        "MINIO_ROOT_USER",
+        "MINIO_ROOT_PASSWORD"
+      ],
+      "fixed": {}
+    },
+    "services": {
+      "object_storage": {
+        "engine": "minio",
+        "protocol": "s3"
+      }
+    }
+  }
 }

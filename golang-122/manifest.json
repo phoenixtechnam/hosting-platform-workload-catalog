@@ -14,22 +14,12 @@
     "cpu": "0.25",
     "memory": "256Mi"
   },
-  "container_port": 8080,
-  "mount_path": "/app",
   "health_check": {
     "path": "/health",
     "command": null,
     "port": 8080,
     "initial_delay_seconds": 10,
     "period_seconds": 30
-  },
-  "env_vars": {
-    "configurable": [
-      "GIN_MODE"
-    ],
-    "fixed": {
-      "PORT": "8080"
-    }
   },
   "services": {
     "database": {
@@ -58,5 +48,29 @@
     "golang",
     "compiled"
   ],
-  "volume_group": "app/golang"
+  "exposes": {
+    "ports": [
+      {
+        "port": 8080,
+        "protocol": "http",
+        "name": "app",
+        "publishable": true
+      }
+    ],
+    "volumes": [
+      {
+        "description": "Application directory",
+        "local_path": "app/golang",
+        "container_path": "/app"
+      }
+    ],
+    "env_vars": {
+      "configurable": [
+        "DATABASE_URL"
+      ],
+      "fixed": {
+        "PORT": "8080"
+      }
+    }
+  }
 }

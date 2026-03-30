@@ -15,38 +15,56 @@
     "memory": "512Mi",
     "storage": "5Gi"
   },
-  "container_port": 3306,
-  "mount_path": "/var/lib/mysql",
   "health_check": {
     "path": null,
-    "command": ["mysqladmin", "ping", "-h", "localhost"],
+    "command": [
+      "mysqladmin",
+      "ping",
+      "-h",
+      "localhost"
+    ],
     "port": null,
     "initial_delay_seconds": 60,
     "period_seconds": 30
   },
-  "env_vars": {
-    "configurable": [
-      "MYSQL_ROOT_PASSWORD",
-      "MYSQL_DATABASE",
-      "MYSQL_USER",
-      "MYSQL_PASSWORD"
+  "tags": [
+    "database",
+    "mysql",
+    "sql"
+  ],
+  "exposes": {
+    "ports": [
+      {
+        "port": 3306,
+        "protocol": "mysql",
+        "name": "database",
+        "publishable": false
+      }
     ],
-    "fixed": {}
-  },
-  "provides": {
-    "database": {
-      "engine": "mysql",
-      "version": "9.0",
-      "protocol": "mysql",
-      "port": 3306,
-      "credentials": {
-        "root_env": "MYSQL_ROOT_PASSWORD",
-        "user_env": "MYSQL_USER",
-        "password_env": "MYSQL_PASSWORD",
-        "database_env": "MYSQL_DATABASE"
+    "volumes": [
+      {
+        "description": "Database data",
+        "local_path": "db/mariadb",
+        "container_path": "/var/lib/mysql"
+      }
+    ],
+    "env_vars": {
+      "configurable": [
+        "MYSQL_DATABASE",
+        "MYSQL_USER"
+      ],
+      "generated": [
+        "MYSQL_ROOT_PASSWORD",
+        "MYSQL_PASSWORD"
+      ],
+      "fixed": {}
+    },
+    "services": {
+      "database": {
+        "engine": "mysql",
+        "version": "9.0",
+        "protocol": "mysql"
       }
     }
-  },
-  "tags": ["database", "mysql", "sql"],
-  "volume_group": "db/mariadb"
+  }
 }

@@ -14,21 +14,12 @@
     "cpu": "0.25",
     "memory": "256Mi"
   },
-  "container_port": 80,
-  "mount_path": "/var/www/html",
   "health_check": {
     "path": "/",
     "command": null,
     "port": 80,
     "initial_delay_seconds": 30,
     "period_seconds": 30
-  },
-  "env_vars": {
-    "configurable": [
-      "PHP_MEMORY_LIMIT",
-      "UPLOAD_MAX_SIZE"
-    ],
-    "fixed": {}
   },
   "services": {
     "database": {
@@ -58,5 +49,28 @@
     "web",
     "htaccess"
   ],
-  "volume_group": "web"
+  "exposes": {
+    "ports": [
+      {
+        "port": 80,
+        "protocol": "http",
+        "name": "web",
+        "publishable": true
+      }
+    ],
+    "volumes": [
+      {
+        "description": "Document root",
+        "local_path": "web",
+        "container_path": "/var/www/html"
+      }
+    ],
+    "env_vars": {
+      "configurable": [
+        "PHP_MEMORY_LIMIT",
+        "PHP_UPLOAD_MAX_FILESIZE"
+      ],
+      "fixed": {}
+    }
+  }
 }

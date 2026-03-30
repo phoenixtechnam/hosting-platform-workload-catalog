@@ -15,40 +15,59 @@
     "memory": "256Mi",
     "storage": "5Gi"
   },
-  "container_port": 3306,
-  "mount_path": "/var/lib/mysql",
   "health_check": {
     "path": null,
-    "command": ["healthcheck.sh", "--connect", "--innodb_initialized"],
+    "command": [
+      "healthcheck.sh",
+      "--connect",
+      "--innodb_initialized"
+    ],
     "port": null,
     "initial_delay_seconds": 60,
     "period_seconds": 30
   },
-  "env_vars": {
-    "configurable": [
-      "MARIADB_ROOT_PASSWORD",
-      "MARIADB_DATABASE",
-      "MARIADB_USER",
-      "MARIADB_PASSWORD"
+  "tags": [
+    "database",
+    "mariadb",
+    "mysql-compatible",
+    "sql",
+    "lts"
+  ],
+  "exposes": {
+    "ports": [
+      {
+        "port": 3306,
+        "protocol": "mysql",
+        "name": "database",
+        "publishable": false
+      }
     ],
-    "fixed": {
-      "MARIADB_AUTO_UPGRADE": "1"
-    }
-  },
-  "provides": {
-    "database": {
-      "engine": "mariadb",
-      "version": "11.4",
-      "protocol": "mysql",
-      "port": 3306,
-      "credentials": {
-        "root_env": "MARIADB_ROOT_PASSWORD",
-        "user_env": "MARIADB_USER",
-        "password_env": "MARIADB_PASSWORD",
-        "database_env": "MARIADB_DATABASE"
+    "volumes": [
+      {
+        "description": "Database data",
+        "local_path": "db/mariadb",
+        "container_path": "/var/lib/mysql"
+      }
+    ],
+    "env_vars": {
+      "configurable": [
+        "MARIADB_DATABASE",
+        "MARIADB_USER"
+      ],
+      "generated": [
+        "MARIADB_ROOT_PASSWORD",
+        "MARIADB_PASSWORD"
+      ],
+      "fixed": {
+        "MARIADB_AUTO_UPGRADE": "1"
+      }
+    },
+    "services": {
+      "database": {
+        "engine": "mariadb",
+        "version": "11.4",
+        "protocol": "mysql"
       }
     }
-  },
-  "tags": ["database", "mariadb", "mysql-compatible", "sql", "lts"],
-  "volume_group": "db/mariadb"
+  }
 }

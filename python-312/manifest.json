@@ -14,8 +14,6 @@
     "cpu": "0.25",
     "memory": "256Mi"
   },
-  "container_port": 8000,
-  "mount_path": "/app",
   "health_check": {
     "path": "/health",
     "command": null,
@@ -23,28 +21,61 @@
     "initial_delay_seconds": 30,
     "period_seconds": 30
   },
-  "env_vars": {
-    "configurable": [
-      "DJANGO_SETTINGS_MODULE",
-      "FLASK_APP",
-      "PYTHONPATH"
-    ],
-    "fixed": {
-      "PORT": "8000",
-      "PYTHONUNBUFFERED": "1"
-    }
-  },
   "services": {
     "database": {
       "required": false,
       "engines": [
-        { "type": "postgresql", "min_version": "12" },
-        { "type": "mariadb", "min_version": "10.4" },
-        { "type": "mysql", "min_version": "5.7" }
+        {
+          "type": "postgresql",
+          "min_version": "12"
+        },
+        {
+          "type": "mariadb",
+          "min_version": "10.4"
+        },
+        {
+          "type": "mysql",
+          "min_version": "5.7"
+        }
       ],
-      "env_mapping": { "url": "DATABASE_URL" }
+      "env_mapping": {
+        "url": "DATABASE_URL"
+      }
     }
   },
-  "tags": ["python", "django", "flask", "fastapi", "runtime"],
-  "volume_group": "app/python"
+  "tags": [
+    "python",
+    "django",
+    "flask",
+    "fastapi",
+    "runtime"
+  ],
+  "exposes": {
+    "ports": [
+      {
+        "port": 8000,
+        "protocol": "http",
+        "name": "app",
+        "publishable": true
+      }
+    ],
+    "volumes": [
+      {
+        "description": "Application directory",
+        "local_path": "app/python",
+        "container_path": "/app"
+      }
+    ],
+    "env_vars": {
+      "configurable": [
+        "DJANGO_SETTINGS_MODULE",
+        "FLASK_APP",
+        "DATABASE_URL"
+      ],
+      "fixed": {
+        "PORT": "8000",
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  }
 }
