@@ -19,13 +19,23 @@
   "mount_path": "/var/lib/mysql",
   "health_check": {
     "path": null,
-    "command": ["mysqladmin", "ping", "-h", "localhost"],
+    "command": [
+      "mysqladmin",
+      "ping",
+      "-h",
+      "localhost"
+    ],
     "port": null,
     "initial_delay_seconds": 60,
     "period_seconds": 30
   },
   "env_vars": {
-    "configurable": ["MYSQL_ROOT_PASSWORD", "MYSQL_DATABASE", "MYSQL_USER", "MYSQL_PASSWORD"],
+    "configurable": [
+      "MYSQL_ROOT_PASSWORD",
+      "MYSQL_DATABASE",
+      "MYSQL_USER",
+      "MYSQL_PASSWORD"
+    ],
     "fixed": {}
   },
   "provides": {
@@ -42,5 +52,10 @@
       }
     }
   },
-  "tags": ["database", "mysql", "sql"]
+  "tags": [
+    "database",
+    "mysql",
+    "sql"
+  ],
+  "volume_group": "db/mariadb"
 }

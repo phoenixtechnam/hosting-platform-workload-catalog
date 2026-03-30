@@ -28,5 +28,10 @@
     "fixed": {}
   },
   "services": {},
-  "tags": ["static", "nginx", "html"]
+  "tags": [
+    "static",
+    "nginx",
+    "html"
+  ],
+  "volume_group": "web"
 }

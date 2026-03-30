@@ -19,13 +19,21 @@
   "mount_path": "/data/db",
   "health_check": {
     "path": null,
-    "command": ["mongosh", "--eval", "db.adminCommand('ping')"],
+    "command": [
+      "mongosh",
+      "--eval",
+      "db.adminCommand('ping')"
+    ],
     "port": null,
     "initial_delay_seconds": 30,
     "period_seconds": 30
   },
   "env_vars": {
-    "configurable": ["MONGO_INITDB_ROOT_USERNAME", "MONGO_INITDB_ROOT_PASSWORD", "MONGO_INITDB_DATABASE"],
+    "configurable": [
+      "MONGO_INITDB_ROOT_USERNAME",
+      "MONGO_INITDB_ROOT_PASSWORD",
+      "MONGO_INITDB_DATABASE"
+    ],
     "fixed": {}
   },
   "provides": {
@@ -42,5 +50,11 @@
       }
     }
   },
-  "tags": ["database", "mongodb", "nosql", "document"]
+  "tags": [
+    "database",
+    "mongodb",
+    "nosql",
+    "document"
+  ],
+  "volume_group": "db/mongodb"
 }

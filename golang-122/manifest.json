@@ -35,14 +35,28 @@
     "database": {
       "required": false,
       "engines": [
-        { "type": "mariadb", "min_version": "10.4" },
-        { "type": "mysql", "min_version": "5.7" },
-        { "type": "postgresql", "min_version": "12" }
+        {
+          "type": "mariadb",
+          "min_version": "10.4"
+        },
+        {
+          "type": "mysql",
+          "min_version": "5.7"
+        },
+        {
+          "type": "postgresql",
+          "min_version": "12"
+        }
       ],
       "env_mapping": {
         "url": "DATABASE_URL"
       }
     }
   },
-  "tags": ["go", "golang", "compiled"]
+  "tags": [
+    "go",
+    "golang",
+    "compiled"
+  ],
+  "volume_group": "app/golang"
 }

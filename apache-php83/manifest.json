@@ -34,8 +34,14 @@
     "database": {
       "required": false,
       "engines": [
-        { "type": "mariadb", "min_version": "10.4" },
-        { "type": "mysql", "min_version": "5.7" }
+        {
+          "type": "mariadb",
+          "min_version": "10.4"
+        },
+        {
+          "type": "mysql",
+          "min_version": "5.7"
+        }
       ],
       "env_mapping": {
         "host": "DB_HOST",
@@ -46,5 +52,11 @@
       }
     }
   },
-  "tags": ["php", "apache", "web", "htaccess"]
+  "tags": [
+    "php",
+    "apache",
+    "web",
+    "htaccess"
+  ],
+  "volume_group": "web"
 }

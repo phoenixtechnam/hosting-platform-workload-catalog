@@ -18,7 +18,11 @@
   "mount_path": null,
   "health_check": {
     "path": null,
-    "command": ["sh", "-c", "echo stats | nc localhost 11211 | grep -q pid"],
+    "command": [
+      "sh",
+      "-c",
+      "echo stats | nc localhost 11211 | grep -q pid"
+    ],
     "port": null,
     "initial_delay_seconds": 10,
     "period_seconds": 30
@@ -37,5 +41,10 @@
       "port": 11211
     }
   },
-  "tags": ["cache", "memcached", "key-value"]
+  "tags": [
+    "cache",
+    "memcached",
+    "key-value"
+  ],
+  "volume_group": null
 }

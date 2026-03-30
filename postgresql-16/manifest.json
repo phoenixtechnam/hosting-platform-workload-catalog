@@ -19,7 +19,11 @@
   "mount_path": "/var/lib/postgresql/data",
   "health_check": {
     "path": null,
-    "command": ["pg_isready", "-U", "postgres"],
+    "command": [
+      "pg_isready",
+      "-U",
+      "postgres"
+    ],
     "port": null,
     "initial_delay_seconds": 30,
     "period_seconds": 30
@@ -46,5 +50,10 @@
       }
     }
   },
-  "tags": ["database", "postgresql", "sql"]
+  "tags": [
+    "database",
+    "postgresql",
+    "sql"
+  ],
+  "volume_group": "db/postgresql"
 }

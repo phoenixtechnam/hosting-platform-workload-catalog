@@ -25,7 +25,10 @@
     "period_seconds": 30
   },
   "env_vars": {
-    "configurable": ["MINIO_ROOT_USER", "MINIO_ROOT_PASSWORD"],
+    "configurable": [
+      "MINIO_ROOT_USER",
+      "MINIO_ROOT_PASSWORD"
+    ],
     "fixed": {
       "MINIO_BROWSER": "on"
     }
@@ -42,5 +45,11 @@
       }
     }
   },
-  "tags": ["storage", "s3", "object-storage", "minio"]
+  "tags": [
+    "storage",
+    "s3",
+    "object-storage",
+    "minio"
+  ],
+  "volume_group": "storage/minio"
 }

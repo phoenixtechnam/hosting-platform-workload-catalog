@@ -19,7 +19,10 @@
   "mount_path": "/data",
   "health_check": {
     "path": null,
-    "command": ["redis-cli", "ping"],
+    "command": [
+      "redis-cli",
+      "ping"
+    ],
     "port": null,
     "initial_delay_seconds": 10,
     "period_seconds": 30
@@ -38,5 +41,10 @@
       "port": 6379
     }
   },
-  "tags": ["cache", "redis", "key-value"]
+  "tags": [
+    "cache",
+    "redis",
+    "key-value"
+  ],
+  "volume_group": "cache/redis"
 }
